@@ -11,26 +11,20 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  late Future<Map<String, dynamic>> weatherFuture;
 
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    weatherFuture = WeatherService().getWeather();
-  }
+
 
   TextEditingController cityController = TextEditingController();
   Map<String, dynamic>? weatherData;
-  String cityname = '';
-  bool loading = false;
+  String _cityName = '';
+  bool _isLoading = false;
   Future<void> searchWeather() async {
     final city = cityController.text.trim();
     if (city.isEmpty) {
       return;
     }
     setState(() {
-      loading = true;
+      _isLoading = true;
     });
     try {
       final service = WeatherService();
@@ -40,7 +34,7 @@ class _HomePageState extends State<HomePage> {
       final weather = await service.getWeatherCord(lat, lng);
       setState(() {
         weatherData = weather;
-        cityname = location['name'];
+        _cityName = location['name'];
       });
     } catch (e) {
       ScaffoldMessenger.of(
@@ -48,7 +42,7 @@ class _HomePageState extends State<HomePage> {
       ).showSnackBar(SnackBar(content: Text(e.toString())));
     }
     setState(() {
-      loading = false;
+      _isLoading = false;
     });
   }
 
@@ -63,11 +57,11 @@ class _HomePageState extends State<HomePage> {
         children: [
           TextField(controller: cityController),
           ElevatedButton(onPressed: searchWeather, child: Text("Search")),
-          if (loading) CircularProgressIndicator(),
+          if (_isLoading) CircularProgressIndicator(),
           if (weatherData != null)
             Column(
               children: [
-                Text(cityname),
+                Text(_cityName),
                 Text(
                   "Temp: ${weatherData!['current_weather']['temperature']} C",
                 ),

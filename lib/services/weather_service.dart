@@ -4,20 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
 class WeatherService {
-  Future<Map<String, dynamic>> getWeather() async {
-    final response = await http.get(
-      Uri.https('https://api.open-meteo.com', '/v1/forecast', {
-        'latitude': '345.545',
-        'longitude': '4342.2224',
-        'current_weather': 'true',
-      }),
-    );
-    if (response.statusCode == 200) {
-      return jsonDecode(response.body);
-    } else {
-      throw Exception('Error');
-    }
-  }
+
 
   Future<Map<String, dynamic>> getWeatherloc(String city) async {
     final response = await http.get(
@@ -28,7 +15,7 @@ class WeatherService {
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body);
       if (data['results'] == null) {
-        return throw Exception("No results");
+        throw Exception("No results");
       }
       return data['results'][0];
     } else {
@@ -36,7 +23,7 @@ class WeatherService {
     }
   }
 
-  Future<Map<String, dynamic>> getWeatherCord(double lat, lng) async {
+  Future<Map<String, dynamic>> getWeatherCord(double lat,double lng) async {
     final response = await http.get(
       Uri.https('api.open-meteo.com', '/v1/forecast', {
         'latitude': lat.toString(),
